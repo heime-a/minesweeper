@@ -1,18 +1,13 @@
-
-
-
 class MineGrid {
-  
   constructor(rowSize, mineRatio) {
     this.rowSize = rowSize;
     this.gridSize = rowSize * rowSize;
     this.mineRatio = mineRatio;
     this.numMines = Math.floor(this.gridSize * this.mineRatio);
     this.reveals = {};
-    this.mines = this.generateMines();   
+    this.mines = this.generateMines();
   }
 
-  
   // Determine all valid adjacent yx coordinates when passed a guess in yx coordinates
   getAdjacentSquares(guess) {
     let gx = guess[0];
@@ -50,7 +45,6 @@ class MineGrid {
     return mines;
   }
 
-
   //given an absolute position in the grid this will return an array of yx coordinates
   mineYX(pos) {
     let y = Math.floor(pos / this.rowSize);
@@ -76,8 +70,8 @@ class MineGrid {
   }
 
   // This gets called when the mouse is clicked on a square
-  // If a square has a mine, the game is lost. If it doesn't the number of mines adjacent to the clicked square will be displayed. 
-  // If there are no adjacent mines all ajdacent squares mine counts will be displayed. 
+  // If a square has a mine, the game is lost. If it doesn't the number of mines adjacent to the clicked square will be displayed.
+  // If there are no adjacent mines all ajdacent squares mine counts will be displayed.
   processGuess(guess) {
     if (guess in this.reveals) {
       return;
@@ -93,15 +87,14 @@ class MineGrid {
   }
 }
 
-// create divs for the minegrid styled by minesweeper.css 
+// create divs for the minegrid styled by minesweeper.css
 function renderSquares(numsquares) {
   for (let i = 0; i < numsquares; i++) {
     var idiv = document.createElement("div");
     idiv.className = "square";
-    idiv.internalId = i;
     idiv.innerText = "?";
     idiv.onclick = function() {
-      handleClick(this.internalId);
+      handleClick(i);
     };
     document.getElementById("container").appendChild(idiv);
   }
@@ -110,7 +103,6 @@ function renderSquares(numsquares) {
 // The game is won when revealed squares + number of mines = gridsize
 
 function handleClick(id) {
-
   if (mg.mines.has(id)) {
     lostGame = true;
     lostGuess = id;
@@ -119,7 +111,6 @@ function handleClick(id) {
   }
   renderReveals();
 }
-
 
 // Use the reveals array to send the changes to the grid to the DOM
 function renderReveals() {
@@ -133,6 +124,8 @@ function renderReveals() {
       if (lostGuess > -1 && i === lostGuess) {
         lostGuess = -1;
         container.children[i].classList.toggle("squareLose");
+        container.children[i].classList.toggle("redsq");
+        document.querySelector("body").classList.toggle("lostGame");
       }
       container.children[i].innerHTML = lostGame
         ? '<i class="fas fa-bomb"></i>'
@@ -143,13 +136,8 @@ function renderReveals() {
   }
 }
 
-
-
 var lostGame = false;
 var lostGuess = 0;
 
 renderSquares(64);
 var mg = new MineGrid(8, 0.2);
-
-
-
